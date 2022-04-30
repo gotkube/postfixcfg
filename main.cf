@@ -1,0 +1,135 @@
+alias_maps = pgsql:/usr/local/etc/postfix/pgsql-aliases.cf
+
+append_dot_mydomain = no
+
+biff = no
+
+compatibility_level = 2
+
+data_directory = /var/run/postfix
+
+inet_interfaces = all
+inet_protocols = ipv4
+
+local_transport = virtual
+local_recipient_maps = $virtual_mailbox_maps
+
+mail_owner = email
+
+mailbox_size_limit = 0
+maillog_file=/var/log/postfix.log
+
+mailbox_transport = lmtp:[127.0.0.1]:24
+
+message_size_limit = 51200000
+
+milter_default_action = accept
+milter_mail_macros =  i {mail_addr} {client_addr} {client_name} {auth_authen}
+milter_protocol = 6
+
+mydestination = mydomain.vpn, mail.mydomain.vpn, localhost, localhost.localdomain
+mydomain = mydomain.vpn
+myhostname = mail.mydomain.vpn
+mynetworks = 127.0.0.0/8 10.8.0.0/24
+mynetworks_style = host
+myorigin = /etc/mailname
+
+non_smtpd_milters = $smtpd_milters
+
+queue_directory = /var/run/postfix/spool
+
+
+readme_directory = no
+recipient_delimiter = +
+
+relayhost=
+
+relay_domains = gmail.com, myisp.com
+relay_recipient_maps = hash:/usr/local/etc/postfix/relay_recipients
+
+sender_dependent_default_transport_maps = hash:/usr/local/etc/postfix/relay_transport
+sender_dependent_relayhost_maps = hash:/usr/local/etc/postfix/sender_relay
+
+smtp_always_send_ehlo = yes
+
+smtp_sasl_auth_enable = yes
+smtp_sasl_password_maps = hash:/usr/local/etc/postfix/smtp_sasl_password
+smtp_sasl_security_options = noanonymous, noplaintext
+smtp_sasl_tls_security_options = noanonymous
+smtp_sender_dependent_authentication = yes
+
+smtp_tls_CAfile = /usr/local/etc/ssl/ca-mydomainvpn/ca.crt
+smtp_tls_loglevel = 3
+smtp_tls_mandatory_protocols=!SSLv2,!SSLv3
+smtp_tls_note_starttls_offer = yes
+smtp_tls_security_level = may
+smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
+
+smtp_use_tls = yes
+
+smtpd_banner = $myhostname ESMTP $mail_name (Raspbian)
+
+smtpd_client_restrictions = permit_mynetworks, permit_sasl_authenticated, reject_unauth_destination, reject_rbl_client zen.spamhaus.org, reject_rbl_client bl.spamcop.net, reject_rbl_client cbl.abuseat.org, permit
+
+smtpd_milters = inet:127.0.0.1:11332
+
+smtpd_recipient_restrictions = permit_mynetworks, permit_sasl_authenticated, reject_unauth_destination
+smtpd_relay_restrictions = permit_mynetworks, permit_sasl_authenticated, reject_unauth_destination
+
+
+smtpd_sasl_auth_enable = yes
+smtpd_sasl_authenticated_header = yes
+smtpd_sasl_local_domain = mydomain.vpn
+smtpd_sasl_path = auth-dovecot
+smtpd_sasl_security_options = noanonymous, noplaintext
+smtpd_sasl_tls_security_options = noanonymous
+smtpd_sasl_type = dovecot
+
+
+smtpd_tls_auth_only = yes
+smtpd_tls_cert_file = /usr/local/etc/ssl/mail.mydomain.vpn.TLS.crt
+smtpd_tls_exclude_ciphers = aNULL, eNULL, EXPORT, DES, RC4, MD5, PSK, aECDH, EDH-DSS-DES-CBC3-SHA, EDH-RSA-DES-CDC3-SHA, KRB5-DE5, CBC3-SHA
+smtpd_tls_key_file = /usr/local/etc/ssl/mail.mydomain.vpn.TLS.key
+smtpd_tls_loglevel = 1
+smtpd_tls_mandatory_protocols=!SSLv2,!SSLv3
+smtpd_tls_protocols = TLS1
+smtpd_tls_received_header = yes
+smtpd_tls_security_level = may
+smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
+
+smtpd_use_tls=yes
+
+transport_maps = pgsql:/usr/local/etc/postfix/transport.cf
+
+virtual_alias_maps = pgsql:/usr/local/etc/postfix/virtual_alias_maps.cf,pgsql:/usr/local/etc/postfix/virtual_alias_domains_maps.cf
+virtual_alias_domains = pgsql:/usr/local/etc/postfix/virtual_alias_domains.cf
+
+
+virtual_gid_maps = static:2020
+virtual_mailbox_base = /data/local/mail
+
+	
+virtual_mailbox_domains = pgsql:/usr/local/etc/postfix/virtual_mailbox_domains.cf
+virtual_mailbox_maps = pgsql:/usr/local/etc/postfix/virtual_mailbox_maps.cf
+
+
+virtual_maps = pgsql:/usr/local/etc/postfix/virtual_maps.cf
+
+
+virtual_minimum_uid = 2020
+
+virtual_transport = lmtp:[127.0.0.1]:24
+
+virtual_uid_maps = static:2020
+
+meta_directory = /etc/postfix
+setgid_group = postdrop
+command_directory = /usr/sbin
+sample_directory = /etc/postfix
+newaliases_path = /usr/bin/newaliases
+mailq_path = /usr/bin/mailq
+sendmail_path = /usr/sbin/sendmail
+daemon_directory = /usr/lib/postfix/sbin
+manpage_directory = /usr/share/man
+html_directory = /usr/share/doc/postfix/html
+shlib_directory = /usr/lib/postfix
